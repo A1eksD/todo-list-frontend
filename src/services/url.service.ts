@@ -8,7 +8,7 @@ import { lastValueFrom } from 'rxjs';
 export class UrlService {
 
   constructor() { }
-  // localUrl:string = 'http://localhost:4200';
+  localUrl:string = 'http://localhost:4200';
   baseUrl:string = 'http://api.domain.com';
 
 }

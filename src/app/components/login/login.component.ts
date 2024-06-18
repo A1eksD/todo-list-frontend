@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { UrlService } from '../../../services/url.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { lastValueFrom } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +22,7 @@ export class LoginComponent {
   async login() {
 
     try{
-      let response = await this.loginWithUsernameAndPassword();
+      let response = await this.loginWithUsernameAndPassword(this.userName, this.password);
       console.log('response', response);
       
     } catch (e){
@@ -29,12 +30,11 @@ export class LoginComponent {
     }
   }
 
-  loginWithUsernameAndPassword(){
-    // const url = this.urlService.localUrl + '/login/';
-    const url = this.urlService.baseUrl + '/login/';
+  loginWithUsernameAndPassword(userName:string, password:string){
+    const url = environment.baseUrl + '/login/';
     const body = {
-      username: this.userName,
-      password: this.password,
+      username: userName,
+      password: password,
     };
     return lastValueFrom(this.http.post(url, body));
   }

@@ -4,6 +4,7 @@ import { environment } from '../../../environments/environment';
 import { lastValueFrom } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { AuthInterceptorService } from '../../services/auth-interceptor.service';
 
 @Component({
   selector: 'app-todos',
@@ -31,10 +32,11 @@ export class TodosComponent {
 
   loadTodos(){
     const url = environment.baseUrl + '/todos/';
-    let headers = new HttpHeaders();
-    headers = headers.set('Authorization', 'Token ' + localStorage.getItem('token'));
-    return lastValueFrom(this.http.get(url, {
-      headers: headers
-    }));
+    // let headers = new HttpHeaders();
+    // headers = headers.set('Authorization', 'Token ' + localStorage.getItem('token'));
+    return lastValueFrom(this.http.get(url));
+    // return lastValueFrom(this.http.get(url, {
+    //   headers: headers
+    // }));
   }
 }

@@ -1,10 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { UrlService } from '../../../services/url.service';
-import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
-import { lastValueFrom } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { UrlService } from '../../services/url.service';
+import { HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Token } from '../../interface/response';
 

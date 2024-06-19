@@ -1,1 +1,6 @@
-<p>todos works!</p>
+@for (item of todos; track $index) {
+    <div>
+        <input type="checkbox" [checked]="item.done">
+        {{ item.text }}
+    </div>
+}

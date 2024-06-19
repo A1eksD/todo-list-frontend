@@ -6,6 +6,7 @@ import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http'
 import { lastValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
+import { Token } from '../../interface/response';
 
 @Component({
   selector: 'app-login',
@@ -18,26 +19,20 @@ export class LoginComponent {
   userName: string = '';
   password: string = '';
 
-  constructor(private urlService: UrlService, private http: HttpClient, private router: Router){}
+  constructor(private urlService: UrlService, private router: Router){}
 
   async login() {
 
     try{
-      let response = await this.loginWithUsernameAndPassword(this.userName, this.password);
+      let response = await this.urlService.loginWithUsernameAndPassword(this.userName, this.password) as Token;
       console.log('response', response);
+      if (response) {
+        localStorage.setItem('token', response.token); 
+      }
       this.router.navigateByUrl('/todos');
     } catch (e){
       console.error('error', e);
     }
-  }
-
-  loginWithUsernameAndPassword(userName:string, password:string){
-    const url = environment.baseUrl + '/login/';
-    const body = {
-      username: userName,
-      password: password,
-    };
-    return lastValueFrom(this.http.post(url, body));
   }
   
 }

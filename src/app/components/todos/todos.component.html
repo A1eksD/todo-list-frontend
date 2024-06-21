@@ -1,8 +1,14 @@
 <h1>{{ error }}</h1>
+<form (ngSubmit)="createTodo()">
+    <input type="text" name="userName" [(ngModel)]="inputText" required>
+    <button>Save</button>
+</form>
+
 
 @for (item of todos; track $index) {
     <div>
         <input type="checkbox" [checked]="item.done">
         {{ item.text }}
+        <button (click)="deleteTodo(item.id)">Delete</button>
     </div>
 }

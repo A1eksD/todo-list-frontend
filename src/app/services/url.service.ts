@@ -8,10 +8,9 @@ import { environment } from '../../environments/environment';
 })
 export class UrlService {
 
-  constructor(private http: HttpClient) { }
-  // localUrl:string = 'http://localhost:4200';
-  // baseUrl:string = 'http://api.domain.com';
+  currentLoggedInUserID: number = 0;
 
+  constructor(private http: HttpClient) { }
   
   loginWithUsernameAndPassword(userName:string, password:string){
     const url = environment.baseUrl + '/login/';

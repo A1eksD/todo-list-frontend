@@ -12,17 +12,16 @@ export class AuthInterceptorService implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): any {
     const authToken = localStorage.getItem('token');
-    let authReq = req;
 
     if (authToken) {
-      authReq = req.clone({
+      req = req.clone({
         setHeaders: {
           Authorization: `Token ${authToken}`
         }
       });
     }
 
-    return next.handle(authReq).pipe(
+    return next.handle(req).pipe(
       catchError((err: any) => {
         if (err instanceof HttpErrorResponse) {
           if (err.status === 401) {

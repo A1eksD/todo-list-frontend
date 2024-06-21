@@ -26,6 +26,7 @@ export class LoginComponent {
       console.log('response', response);
       if (response) {
         localStorage.setItem('token', response.token); 
+        localStorage.setItem('userID', response.user_id.toString()); 
       }
       this.router.navigateByUrl('/todos');
     } catch (e){

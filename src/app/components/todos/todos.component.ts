@@ -1,4 +1,8 @@
-import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpClientModule,
+  HttpHeaders,
+} from '@angular/common/http';
 import { Component } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { catchError, lastValueFrom, throwError } from 'rxjs';
@@ -16,24 +20,23 @@ import { UrlService } from '../../services/url.service';
   styleUrl: './todos.component.scss',
 })
 export class TodosComponent {
-  todos:any = [];
+  todos: any = [];
   error: string = '';
   inputText: string = '';
-  
+
   constructor(private http: HttpClient, private urlService: UrlService) {}
 
-  async ngOnInit(){
-    try{
+  async ngOnInit() {
+    try {
       this.todos = await this.loadTodos();
       console.log(this.todos);
-    } catch(e) {
+    } catch (e) {
       console.error(e);
       this.error = 'Fehler bim laden';
     }
-    
   }
 
-  loadTodos(){
+  loadTodos() {
     const url = environment.baseUrl + '/todos/';
     // let headers = new HttpHeaders();
     // headers = headers.set('Authorization', 'Token ' + localStorage.getItem('token'));
@@ -42,7 +45,7 @@ export class TodosComponent {
     //   headers: headers
     // }));
   }
-
+  
 
   createTodo() {
     if (this.inputText) {
@@ -53,44 +56,42 @@ export class TodosComponent {
         text: this.inputText,
         created_at: new Date().toISOString().split('T')[0],
         author: getUserID,
-        done: false
+        done: false,
       };
-  
-      this.http.post(url, body)
+
+      this.http
+        .post(url, body)
         .pipe(
-          catchError(error => {
+          catchError((error) => {
             console.error('Fehler beim Speichern des ToDos:', error);
             return throwError(() => error);
           })
         )
-        .subscribe(response => {
+        .subscribe((response) => {
           console.log('ToDo erfolgreich gespeichert:', response);
           this.todos.push(response);
         });
-  
+
       this.inputText = '';
     }
   }
 
 
-  deleteTodo(id: number){
+  deleteTodo(id: number): void {
     if (id) {
-      const getTodo = this.todos.filter((todo:any) => todo.id === id);
-      const url = environment.baseUrl + '/todos/';
-
-      this.http.delete(url, getTodo[0].id)
+      const url = `${environment.baseUrl}/todos/${id}`;
+      this.http
+        .delete(url)
         .pipe(
-          catchError(error => {
-            console.error('Fehler beim löschen des ToDos:', error);
+          catchError((error) => {
+            console.error('Error deleting todo:', error);
             return throwError(() => error);
           })
         )
-        .subscribe(response => {
-          console.log('ToDo erfolgreich gelöscht:', response);
+        .subscribe((response) => {
+          console.log('Todo deleted successfully:', response);
+          this.todos = this.todos.filter((todo: any) => todo.id !== id);
         });
-  
     }
   }
-  
-  
 }

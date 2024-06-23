@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { AuthInterceptorService } from '../../services/auth-interceptor.service';
 import { Token } from '@angular/compiler';
 import { UrlService } from '../../services/url.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-todos',
@@ -27,8 +28,9 @@ export class TodosComponent {
   currenTaskValue: string = '';
   currentTaskID: string = '';
   openEditWidow: boolean = false;
+  logoutEvent: any;
 
-  constructor(private http: HttpClient, private urlService: UrlService) {}
+  constructor(private http: HttpClient, private urlService: UrlService, private router: Router) {}
 
   async ngOnInit() {
     try {
@@ -145,4 +147,20 @@ export class TodosComponent {
     this.closeEdit();
   }
   
+
+  logout() {
+    this.http
+      .post(`${environment.baseUrl}/logout/`, {})
+      .pipe(
+        catchError((error) => {
+          console.error('Error logging out:', error);
+          return throwError(() => error);
+        })
+      )
+      .subscribe(() => {
+        console.log('Successfully logged out');
+        this.router.navigate(['/login'])
+        localStorage.clear();
+      });
+  }
 }

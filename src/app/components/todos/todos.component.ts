@@ -23,6 +23,10 @@ export class TodosComponent {
   todos: any = [];
   error: string = '';
   inputText: string = '';
+  editTextValue: string = '';
+  currenTaskValue: string = '';
+  currentTaskID: string = '';
+  openEditWidow: boolean = false;
 
   constructor(private http: HttpClient, private urlService: UrlService) {}
 
@@ -45,7 +49,7 @@ export class TodosComponent {
     //   headers: headers
     // }));
   }
-  
+
 
   createTodo() {
     if (this.inputText) {
@@ -94,4 +98,51 @@ export class TodosComponent {
         });
     }
   }
+
+  editTodo(id: number){
+    let task = this.todos.filter((todo: any) => todo.id === id);
+    this.currentTaskID = id.toString();
+    this.currenTaskValue = task[0].text;
+    this.editTextValue = task[0].text;
+    this.openEditWidow = !this.openEditWidow;
+  }
+
+  closeEdit(){
+    this.openEditWidow = !this.openEditWidow;
+    this.editTextValue = '';
+  }
+
+
+  
+  saveChanges() {
+    if (this.editTextValue.length > 0 && this.editTextValue !== this.currenTaskValue) {
+      const url = `${environment.baseUrl}/todos/${Number(this.currentTaskID)}`;
+      const getAuthorID = +localStorage.getItem('userID')!;
+      const body = {
+        author: getAuthorID,
+        text: this.editTextValue
+      };
+
+      this.http
+        .put(url, body)
+        .pipe(
+          catchError((error) => {
+            console.error('Fehler beim Speichern des ToDos:', error);
+            return throwError(() => error);
+          })
+        )
+        .subscribe((response) => {
+          console.log('ToDo erfolgreich gespeichert:', response);
+          const updatedTodoIndex = this.todos.findIndex((todo: any) => todo.id ===  Number(this.currentTaskID));
+          if (updatedTodoIndex !== -1) {
+            this.todos[updatedTodoIndex] = response;
+          }
+        });
+    } else {
+      alert('Please enter a value greater than 0 and different from the current task.');
+    }
+
+    this.closeEdit();
+  }
+  
 }

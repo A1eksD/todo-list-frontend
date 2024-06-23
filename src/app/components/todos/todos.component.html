@@ -10,5 +10,12 @@
         <input type="checkbox" [checked]="item.done">
         {{ item.text }}
         <button (click)="deleteTodo(item.id)">Delete</button>
+        <button (click)="editTodo(item.id)">Edit</button>
     </div>
+}
+
+@if (openEditWidow) {
+    <input type="text" [(ngModel)]="editTextValue">
+    <button (click)="saveChanges()">Save changes</button>
+    <button (click)="closeEdit()">Close</button>
 }

@@ -8,7 +8,7 @@
 
 @for (item of todos; track $index) {
     <div>
-        <input type="checkbox" [checked]="item.done">
+        <input type="checkbox" [checked]="item.done" (click)="todoDone(item.id)">
         {{ item.text }}
         <button (click)="deleteTodo(item.id)">Delete</button>
         <button (click)="editTodo(item.id)">Edit</button>

@@ -30,7 +30,11 @@ export class TodosComponent {
   openEditWidow: boolean = false;
   logoutEvent: any;
 
-  constructor(private http: HttpClient, private urlService: UrlService, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private urlService: UrlService,
+    private router: Router
+  ) {}
 
   async ngOnInit() {
     try {
@@ -44,12 +48,7 @@ export class TodosComponent {
 
   loadTodos() {
     const url = environment.baseUrl + '/todos/';
-    // let headers = new HttpHeaders();
-    // headers = headers.set('Authorization', 'Token ' + localStorage.getItem('token'));
     return lastValueFrom(this.http.get(url));
-    // return lastValueFrom(this.http.get(url, {
-    //   headers: headers
-    // }));
   }
 
 
@@ -101,7 +100,8 @@ export class TodosComponent {
     }
   }
 
-  editTodo(id: number){
+
+  editTodo(id: number) {
     let task = this.todos.filter((todo: any) => todo.id === id);
     this.currentTaskID = id.toString();
     this.currenTaskValue = task[0].text;
@@ -109,20 +109,23 @@ export class TodosComponent {
     this.openEditWidow = !this.openEditWidow;
   }
 
-  closeEdit(){
+
+  closeEdit() {
     this.openEditWidow = !this.openEditWidow;
     this.editTextValue = '';
   }
 
 
-  
   saveChanges() {
-    if (this.editTextValue.length > 0 && this.editTextValue !== this.currenTaskValue) {
+    if (
+      this.editTextValue.length > 0 &&
+      this.editTextValue !== this.currenTaskValue
+    ) {
       const url = `${environment.baseUrl}/todos/${Number(this.currentTaskID)}`;
       const getAuthorID = +localStorage.getItem('userID')!;
       const body = {
         author: getAuthorID,
-        text: this.editTextValue
+        text: this.editTextValue,
       };
 
       this.http
@@ -135,18 +138,21 @@ export class TodosComponent {
         )
         .subscribe((response) => {
           console.log('ToDo erfolgreich gespeichert:', response);
-          const updatedTodoIndex = this.todos.findIndex((todo: any) => todo.id ===  Number(this.currentTaskID));
+          const updatedTodoIndex = this.todos.findIndex(
+            (todo: any) => todo.id === Number(this.currentTaskID)
+          );
           if (updatedTodoIndex !== -1) {
             this.todos[updatedTodoIndex] = response;
           }
         });
     } else {
-      alert('Please enter a value greater than 0 and different from the current task.');
+      alert(
+        'Please enter a value greater than 0 and different from the current task.'
+      );
     }
-
     this.closeEdit();
   }
-  
+
 
   logout() {
     this.http
@@ -159,8 +165,42 @@ export class TodosComponent {
       )
       .subscribe(() => {
         console.log('Successfully logged out');
-        this.router.navigate(['/login'])
+        this.router.navigate(['/login']);
         localStorage.clear();
       });
+  }
+
+
+  todoDone(id: number) {
+    let getValue = this.returnDoneValue(id);
+    const url = `${environment.baseUrl}/todos/${id}`;
+    const getAuthorID = +localStorage.getItem('userID')!;
+      const body = {
+        author: getAuthorID,
+        text: this.currenTaskValue,
+        done: getValue
+      };
+    this.http
+      .put(url, body)
+      .pipe(
+        catchError((error) => {
+          console.error('Error checking todo:', error);
+          return throwError(() => error);
+        })
+      )
+      .subscribe((response) => {
+        console.log('Todo checking successfully:', response);
+      });
+  }
+
+
+  returnDoneValue(id: number) {
+    let task = this.todos.filter((todo: any) => todo.id === id);
+    this.currenTaskValue = task[0].text;
+    if (task[0].done) {
+      return (task[0].done = false);
+    } else {
+      return (task[0].done = true);
+    }
   }
 }
